@@ -77,7 +77,7 @@ class TestBookingIntg(object):
         first_name = response.json()["firstname"]
         print(first_name)
 
-        verify_first_name(first_name, "shambhavi")
-        verify_http_status_code(response, 200)
+        verify_response_key(first_name, "Amit")
+        verfiy_http_status_code(response, 200)
 
-        verify_key_not_null(first_name)
+        verify_json_key_for_not_null_token(first_name)

@@ -57,7 +57,5 @@ Hybrid Custom Framework to Test the REST APIs
 - Install the Plugins - http://localhost:8080/manage/pluginManager/
   - Allure
 - HTML Report
-- GITHUB - Repo - https://github.com/PramodDutta/Py2xAPIAutomationFramework.git
-
+- GITHUB - Repo - https://github.com/utkarshupadhyay-qa/Py2xAPIAutomationFramework.git
  
-
