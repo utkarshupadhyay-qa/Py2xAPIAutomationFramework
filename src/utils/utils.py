@@ -1,4 +1,6 @@
 # class or functions
+# Utils contain all common things like headers
+# read csvfile and readxl file will be in utils
 
 class Util(object):
 
