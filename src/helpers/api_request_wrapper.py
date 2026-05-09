@@ -11,7 +11,7 @@ def get_request(url, auth):
     return response.json()
 
 
-def post_request(url,auth,headers,payload,in_json):
+def post_request(url,auth,headers,payload,in_json):   #in_json is boolean - True or False
     post_response = requests.post(url=url,headers=headers,auth=auth,data=json.dumps(payload))
     # # json.dumps() -> will make sure that whatever data you are setting as dictionary - it gets converted to json only
     if in_json is True:
