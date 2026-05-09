@@ -3,7 +3,7 @@ def verfiy_http_status_code(response_data, expect_data):
 
 
 
-# This method will be used for booking_id -> booking_id should not be null or greater than 0
+# This method will be used for booking_id -> booking_id should not be null and booking_id should be greater than 0
 def verify_json_key_for_not_null(key):
     assert key != 0, "Failed - Key is non Empty" + key    # After assert, we can give failed message after comma
     assert key > 0, "Failed - Key is greater than zero"
