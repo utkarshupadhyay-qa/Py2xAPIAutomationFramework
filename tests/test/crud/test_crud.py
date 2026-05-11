@@ -34,6 +34,8 @@ class TestCRUDBooking(object):
         verfiy_http_status_code(response_data=response, expect_data=200)
         verify_json_key_for_not_null_token(response.json()["token"])
         return response.json()["token"]
+        # We can use this fixture only in this class , but if we copy this fixture and put it in conftest , then it can be used by whole project
+
 
     @pytest.fixture()
     def get_booking_id(self):
