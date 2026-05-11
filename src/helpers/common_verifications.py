@@ -1,4 +1,4 @@
-def verfiy_http_status_code(response_data, expect_data):
+def verify_http_status_code(response_data, expect_data):
     assert response_data.status_code == expect_data, "Failed ER!=AR"
 
 
@@ -20,6 +20,11 @@ def verify_response_key_should_not_be_none(key):
 
 def verify_response_delete(response):
     assert "Created" in response
+
+
+
+def verify_first_name(key,expected_result):
+    assert key==expected_result , "Failed = First Name is not matching"
 
 
 def verify_response_key(key, expected_data):

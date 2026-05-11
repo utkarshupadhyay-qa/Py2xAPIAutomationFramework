@@ -54,7 +54,7 @@ class TestCRUDBooking(object):
     @allure.title("Test CRUD operation Update(PUT).")
     @allure.description(
         "Verify that Full Update with the booking ID and Token is working.")
-    def test_update_booking_id_token(self, create_token, get_booking_id):
+    def test_update_booking_id_token(self, create_token, get_booking_id):  # passing fixtures as parameters in put request
         booking_id = get_booking_id
         token = create_token
         put_url = APIConstants.url_patch_put_delete(booking_id=booking_id)

@@ -31,53 +31,68 @@ from src.helpers.api_request_wrapper import *
 from src.helpers.common_verifications import *
 
 
-class TestBookingIntg(object):
+# 1. Verify that Create Booking -> Patch Request - Verify that firstName is updated.
+
+import pytest
+import allure
+from src.constants.api_constants import APIConstants
+from src.helpers.api_request_wrapper import *
+from src.helpers.common_verifications import *
+from src.helpers.payload_manager import *
+from src.utils.utils import Util
+
+
+class Test_Integration_TC1(object):
+
+    @pytest.fixture()
+    def create_token(self):
+        response = post_request(
+            url=APIConstants.url_create_token(),
+            payload=payload_create_token(),
+            auth=None,
+            headers = Utils().common_headers_json(),
+            in_json=False
+        )
+
+        token = response.json()["token"]
+        verify_http_status_code(response_data=response,expect_data=200)
+        verify_json_key_for_not_null_token(token)
+        return token
+
 
     @pytest.fixture()
     def create_booking(self):
         response = post_request(url=APIConstants.url_create_booking(),
-                                headers=Util().common_headers_json(),
-                                auth=None,
-                                payload=payload_create_booking(),
-                                in_json=False)
+                                 headers=Util().common_headers_json(),
+                                 payload=payload_create_booking(),
+                                 auth=None,
+                                 in_json=False,
+                                 )
 
         booking_id = response.json()["bookingid"]
-
-        # Bookingid verification
-
-        verfiy_http_status_code(response_data=response, expect_data=200)
+        verify_http_status_code(response_data=response,expect_data=200)
         verify_json_key_for_not_null(booking_id)
-
-
         return booking_id
 
-    @pytest.fixture()
-    def create_token(self):
-        response = post_request(url=APIConstants.url_create_token(),
-                                headers=Util().common_headers_json(),
-                                payload=payload_create_token(),
-                                auth=None,
-                                in_json=False
-                                )
-        token = response.json()["token"]
-        return token
+    @allure.title("Verify First Name is Updated")
+    @allure.description(
+        "Verify that Patch Request is completed and First name is updated")
 
-    # Patch Request - Verify that firstName is updated.
+    def test_patch_request_firstname_updated(self,create_booking,create_token):
+        booking_id=create_booking
+        token=create_token
 
-    @allure.title("TC#1 Integration test: partial update booking")
-    @allure.testcase("Verify that first name is updated")
-    @allure.description("verifying first name updation")
-    def test_patch_request(self, create_booking, create_token):
-        response = patch_requests(url=APIConstants.url_patch_put_delete(create_booking),
-                                 headers=Util().common_header_put_delete_patch_cookie(create_token),
-                                 auth=None,
-                                 payload=payload_create_booking_dynamic(),
-                                 in_json=False)
+        response = patch_requests(url=APIConstants.url_patch_put_delete(booking_id=booking_id),
+                                  headers=Util().common_header_put_delete_patch_cookie(token=token),
+                                  auth=None,
+                                  in_json=False,
+                                  payload=payload_create_booking_integration(),
+                                  )
 
         first_name = response.json()["firstname"]
         print(first_name)
 
-        verify_response_key(first_name, "Amit")
-        verfiy_http_status_code(response, 200)
+        verify_first_name(first_name,"Johnson")
+        verify_http_status_code(response_data=response,expect_data=200)
+        verify_response_key_should_not_be_none(first_name)
 
-        verify_json_key_for_not_null_token(first_name)
