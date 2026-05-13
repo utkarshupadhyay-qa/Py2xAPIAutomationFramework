@@ -8,28 +8,56 @@
 # 6. Trying to Update on a Delete Id -> 404
 
 
-# Invalid Creation - enter a wrong payload or Wrong JSON.
+# 4. Create a BOOKING, Delete It
+
+
 
 import pytest
 import allure
-import json
-import requests
+from src.constants.api_constants import APIConstants
+from src.helpers.api_request_wrapper import *
+from src.helpers.common_verifications import *
+from src.helpers.payload_manager import *
+from src.utils.utils import Util
 
-from source.constant.api_constants import APIconstants
-from source.utils.utils import Util
-from source.helpers.payload_manager import *
-from source.helpers.api_request_wrapper import *
-from source.helpers.common_verification import *
 
-@allure.title("TC#1 Invalid booking creation")
-@allure.testcase("Verify status code")
-@allure.description("verify if booking id created using invalid payload")
-def test_invalid_create_booking():
-    response = post_request(url=APIconstants.create_booking_url(),
-                            headers=Util().common_headers_json(),
-                            auth=None,
-                            payload=invalid_payload_integration(),
-                            in_json=False)
+class Test_Integration_TC4(object):
 
-    #Verification
-    verify_http_status_code(response, 500)
+    @pytest.fixture()
+    def create_token(self):
+        response = post_request(url=APIConstants.url_create_token(),
+                                 headers=Util().common_headers_json(),
+                                 auth=None,
+                                 in_json=False,
+                                 payload=payload_create_token())
+
+        token = response.json()["token"]
+        verify_http_status_code(response_data=response, expect_data=200)
+        verify_json_key_for_not_null_token(token)
+        return token
+
+    @pytest.fixture()
+    def create_booking(self):
+        response = post_request(url=APIConstants.url_create_booking(),
+                                 headers=Util().common_headers_json(),
+                                 auth=None,
+                                 in_json=False,
+                                 payload=payload_create_booking())
+
+        booking_id = response.json()["bookingid"]
+        verify_http_status_code(response_data=response, expect_data=200)
+        verify_json_key_for_not_null(booking_id)
+        return booking_id
+
+
+
+    def test_delete_booking(self,create_booking,create_token):
+
+        delete_response=delete_requests(url=APIConstants.url_patch_put_delete(booking_id=create_booking),
+                                        headers=Util().common_header_put_delete_patch_cookie(token=create_token),
+                                        auth=None,
+                                        in_json=False)
+
+        verify_http_status_code(response_data=delete_response,expect_data=201)
+        verify_response_delete(delete_response.text)
+

@@ -27,6 +27,10 @@ def verify_first_name(key,expected_result):
     assert key==expected_result , "Failed = First Name is not matching"
 
 
+def verify_last_name(key,expected_result):
+    assert key==expected_result , "Failed = Last Name is not matching"
+
+
 def verify_response_key(key, expected_data):
     assert key == expected_data
 

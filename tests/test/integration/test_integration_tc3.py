@@ -11,66 +11,67 @@
 
 # 3. Get an Existing Booking id from Get All Bookings Ids , Update a Booking and Verify using GET by id.
 
+# 3. Get an Existing Booking id from Get All Bookings Ids , Update a Booking and Verify using GET by id.
+
+
+
 import pytest
 import allure
-import json
-import requests
-
-from src.constant.api_constants import APIconstants
-from source.utils.utils import Util
-from source.helpers.payload_manager import *
-from source.helpers.api_request_wrapper import *
-from source.helpers.common_verification import *
+from src.constants.api_constants import APIConstants
+from src.helpers.api_request_wrapper import *
+from src.helpers.common_verifications import *
+from src.helpers.payload_manager import *
+from src.utils.utils import Util
 
 
-class Testsinglebookingupdate(object):
+class Test_Integration_TC3(object):
 
     @pytest.fixture()
     def create_token(self):
-        response = post_request(url=APIconstants.create_token_url(),
-                                headers=Util().common_headers_json(),
-                                payload=create_token_payload(),
-                                auth=None,
-                                in_json=False
-                                )
+        response = post_request(url=APIConstants.url_create_token(),
+                                 headers=Util().common_headers_json(),
+                                 auth=None,
+                                 in_json=False,
+                                 payload=payload_create_token()
+                                 )
+
+
         token = response.json()["token"]
         return token
 
+
     @pytest.fixture()
-    def get_all_bookings(self):
-        response = get_request(url=APIconstants.create_booking_url(),
-                               auth=None)
+    def get_existing_booking_id(self):
+        response=get_request(url=APIConstants.url_create_booking(),
+                              auth=None
+                              )
+        bookings=response.json()
+        booking_ids = bookings[0]
+        booking_id=booking_ids["bookingid"]
+        return booking_id
 
-        booking_ids = response.json()
-        booking_id = booking_ids[0]
-        booking = booking_id['bookingid']
 
-        return booking
+    @allure.title("Update the booking_id and verify it got updated")
+    @allure.description("Update the booking using PUT and verify that booking got updated")
+    def test_update_booking_verify_updated(self,create_token,get_existing_booking_id):
+        token=create_token
+        booking_id=get_existing_booking_id
+        response=put_requests(url=APIConstants.url_patch_put_delete(booking_id=booking_id),
+                              headers=Util().common_header_put_delete_patch_cookie(token=token),
+                              auth=None,
+                              in_json=False,
+                              payload=payload_create_booking_integration())
 
-    @allure.title("#TC1 update existing booking id")
-    @allure.testcase("Verify update booking")
-    @allure.description("Verify attributes for existing booking id")
-    def test_update_existing_booking(self, get_all_bookings, create_token):
-        response = put_request(url=APIconstants.url_patch_put_delete(get_all_bookings),
-                               headers=Util().put_patch_delete_headers_cookie(create_token),
-                               auth=None,
-                               payload=existing_put_payload_integration(),
-                               in_json=False)
+        verify_http_status_code(response_data=response,expect_data=200)
 
-        print(response.json())
 
-        first_name = response.json()["firstname"]
-        last_name = response.json()["lastname"]
-        total_amt = response.json()["totalprice"]
+        get_response=get_request(url=APIConstants.url_patch_put_delete(booking_id=booking_id),
+                                  auth=None)
 
-        # verification
+        data=get_response.json()
+        verify_first_name(key=data["firstname"],expected_result="Johnson")
+        verify_last_name(key=data["lastname"],expected_result="Brown")
 
-        verify_http_status_code(response, 200)
+        print("Booking Updated Succesfully")
 
-        verify_first_name(first_name, 'john')
 
-        verify_last_name(last_name, 'cameron')
-
-        verify_key_not_null(total_amt)
-
-        verify_key_not_equal_zero(total_amt)
