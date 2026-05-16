@@ -18,7 +18,7 @@ def create_token():
         payload=payload_create_token(),
         in_json=False
     )
-    verfiy_http_status_code(response_data=response, expect_data=200)
+    verify_http_status_code(response_data=response, expect_data=200)
     verify_json_key_for_not_null_token(response.json()["token"])
     return response.json()["token"]
 
@@ -33,6 +33,6 @@ def get_booking_id():
 
     booking_id = response.json()["bookingid"]
 
-    verfiy_http_status_code(response_data=response, expect_data=200)
+    verify_http_status_code(response_data=response, expect_data=200)
     verify_json_key_for_not_null(booking_id)
     return booking_id
