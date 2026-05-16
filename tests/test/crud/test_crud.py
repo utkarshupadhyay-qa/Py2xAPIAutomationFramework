@@ -70,7 +70,7 @@ class TestCRUDBooking(object):
         verify_response_key(response.json()["firstname"], "Amit")
         verify_response_key(response.json()["lastname"], "Brown")
         verify_json_key_for_not_null_token(response.json()["lastname"])
-        verfiy_http_status_code(response_data=response, expect_data=200)
+        verify_http_status_code(response_data=response, expect_data=200)
 
     @allure.title("Test CRUD operation Delete(delete)")
     @allure.description(
@@ -86,4 +86,4 @@ class TestCRUDBooking(object):
             in_json=False
         )
         verify_response_delete(response=response.text)
-        verfiy_http_status_code(response_data=response, expect_data=201)
+        verify_http_status_code(response_data=response, expect_data=201)
