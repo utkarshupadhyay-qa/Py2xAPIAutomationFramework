@@ -47,7 +47,7 @@ class TestCRUDBooking(object):
 
         booking_id = response.json()["bookingid"]
 
-        verfiy_http_status_code(response_data=response, expect_data=200)
+        verify_http_status_code(response_data=response, expect_data=200)
         verify_json_key_for_not_null(booking_id)
         return booking_id
 
